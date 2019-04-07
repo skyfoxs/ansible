@@ -1,0 +1,20 @@
+---
+- hosts: authen
+  become: yes
+  tasks:
+    - name: Login docker registry
+      docker_login:
+        registry: registry.gitlab.com/inprop/authen
+        username: "{{ gitlab_username }}"
+        password: "{{ gitlab_token }}"
+
+    - name: Run authen API
+      docker_container:
+        name: authen
+        image: registry.gitlab.com/inprop/authen:1
+        state: started
+        recreate: yes
+        pull: yes
+        restart_policy: always
+        ports:
+        - "9090:9090"
