@@ -1,0 +1,23 @@
+---
+- hosts: all
+  name: Install DockerCE
+  become: yes
+  gather_facts: yes
+  tasks:
+    - name: Install package for use repository over HTTPS
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+        update_cache: yes
+
+    - name: Add Docker's official Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+
+    - name: Install Docker CE
+      apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        update_cache: yes
